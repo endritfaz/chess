@@ -1,0 +1,28 @@
+:root.dark { 
+    --color-bg: #222222;
+}
+
+body {
+    background-color: var(--color-bg);
+}
+
+.piece {
+    width: 100%;
+    font-size: 500%;
+}
+
+.container {
+    display: grid;
+    height: 100vh;
+    justify-content: center;
+    align-items: center;
+}
+
+#board {
+    border: 4px solid #3b3b3b; 
+    display: grid; 
+    /* This makes the squares resize responsively */
+    --square-size: clamp(20px, 50vw, calc(min(80vh, 80vw)/8));
+    grid-template: repeat(8, var(--square-size)) / repeat(8, var(--square-size));
+}
+
