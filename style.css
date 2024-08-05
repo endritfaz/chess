@@ -59,7 +59,6 @@ body {
 
 /* Taken from https://stackoverflow.com/questions/5697067/css-for-grabbing-cursors-drag-drop */
 .grabbable {
-    cursor: move;
     cursor: grab;
     cursor: -moz-grab;
     cursor: -webkit-grab;

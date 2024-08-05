@@ -17,7 +17,7 @@ function createPiece(pieceCode) {
 }
 
 function placePieces() {
-    // Assumes the player is playing white as this will likely usually be the case
+    // Assumes the player is playing white as this will likely be the case
     let playerPawns = WHITE_PAWN;
     let playerPieces = WHITE_PIECES;
     let opponentPawns = BLACK_PAWN;
@@ -39,9 +39,8 @@ function placePieces() {
     let opponentPieceRow = allSquares.filter((square) => (square.id[1] == '8'));
     let playerPieceRow = allSquares.filter((square) => (square.id[1] == '1'));
 
-    // playerPawnRow/playerPieceRow and opponentPawnRow/opponentPieceRow should allhave length 8 
+    // playerPawnRow/playerPieceRow and opponentPawnRow/opponentPieceRow should all have length 8 
     for (let i = 0; i < opponentPawnRow.length; i++) {
-        // TODO: Clean this up by creating a helper function 
         let opponentPawn = createPiece(opponentPawns);
         opponentPawnRow[i].appendChild(opponentPawn);
         
