@@ -7,10 +7,11 @@ body {
 }
 
 .square {
-    display: grid;
-    justify-content: center;
+    display: flex;
+    height: var(--square-size);
     align-items: center;
-    font-size: calc(var(--square-size) * 0.95);
+    justify-content: center;
+    font-size: calc(var(--square-size));
 }
 
 .container {
