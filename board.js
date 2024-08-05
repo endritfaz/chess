@@ -77,6 +77,7 @@ for (let row = 8; row > 0; row--) {
     for (let column = 1; column < 9; column++) {
         let square = document.createElement("div");
         square.classList.add("square");
+        square.classList.add("prevent-select");
         square.id = `${column}${row}`;
         colorSquare(square);
         

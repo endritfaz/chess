@@ -45,3 +45,10 @@ body {
 .bottom-right-corner { 
     border-bottom-right-radius: var(--corner-border-radius);
 }
+
+/* Taken from https://www.w3schools.com/howto/howto_css_disable_text_selection.asp#:~:text=You%20can%20use%20the%20user,be%20used%20to%20prevent%20this. */
+.prevent-select {
+    -webkit-user-select: none; /* Safari */
+    -ms-user-select: none; /* IE 10 and IE 11 */
+    user-select: none; /* Standard syntax */
+  }
