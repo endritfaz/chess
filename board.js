@@ -7,18 +7,26 @@ const BLACK_PIECES = ["&#x265C;", "&#x265E;", "&#x265D;", "&#x265B;", "&#x265A;"
 // TODO: User playing as white by default. There will be a switch to toggle this, which will negate this value, and replace the pieces. 
 const isPlayingWhite = true; 
 
+function createPiece(pieceCode) {
+    let piece = document.createElement("div");
+    piece.draggable = true;
+    piece.innerHTML = pieceCode;
+    piece.classList.add("piece");
+    return piece;
+}
+
 function placePieces() {
     // Assumes the player is playing white as this will likely usually be the case
-    let playerPawn = WHITE_PAWN;
+    let playerPawns = WHITE_PAWN;
     let playerPieces = WHITE_PIECES;
-    let opponentPawn = BLACK_PAWN;
+    let opponentPawns = BLACK_PAWN;
     let opponentPieces = BLACK_PIECES;
 
     if (!(isPlayingWhite)) {
-        playerPawn = BLACK_PAWN;
+        playerPawns = BLACK_PAWN;
         playerPieces = BLACK_PIECES;
 
-        opponentPawn = WHITE_PAWN
+        opponentPawns = WHITE_PAWN
         opponentPieces = WHITE_PIECES
     }
 
@@ -32,11 +40,18 @@ function placePieces() {
 
     // playerPawnRow/playerPieceRow and opponentPawnRow/opponentPieceRow should allhave length 8 
     for (let i = 0; i < opponentPawnRow.length; i++) {
-        opponentPawnRow[i].innerHTML = opponentPawn;
-        playerPawnRow[i].innerHTML = playerPawn;
+        // TODO: Clean this up by creating a helper function 
+        let opponentPawn = createPiece(opponentPawns);
+        opponentPawnRow[i].appendChild(opponentPawn);
+        
+        let playerPawn = createPiece(playerPawns);
+        playerPawnRow[i].appendChild(playerPawn);
 
-        opponentPieceRow[i].innerHTML = opponentPieces[i];
-        playerPieceRow[i].innerHTML = playerPieces[i];
+        let opponentPiece = createPiece(opponentPieces[i]);
+        opponentPieceRow[i].appendChild(opponentPiece);
+
+        let playerPiece = createPiece(playerPieces[i]);
+        playerPieceRow[i].appendChild(playerPiece);
     }
 }
 
