@@ -10,6 +10,7 @@ body {
     display: grid;
     justify-content: center;
     align-items: center;
+    font-size: calc(var(--square-size) * 0.95);
 }
 
 .container {
