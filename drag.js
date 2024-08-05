@@ -11,6 +11,7 @@ function removeDropZones() {
     a7.removeEventListener("drop", dropHandler);
     a7.removeEventListener("dragover", dragoverHandler);
 }
+
 // For an element to be draggable it needs both the draggable tag and the dragstart event handler
 function dragstartHandler(ev) {
     dragged = ev.target;

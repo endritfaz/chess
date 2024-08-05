@@ -12,6 +12,7 @@ body {
     align-items: center;
     justify-content: center;
     font-size: calc(var(--square-size) * 0.9);
+    font-weight: 500;
 
     /* Stops the background from being dragged. Taken from https://stackoverflow.com/questions/61812276/why-html-draggable-element-drags-with-parent-background */
     transform: translate(0, 0);
@@ -54,4 +55,18 @@ body {
     -webkit-user-select: none; /* Safari */
     -ms-user-select: none; /* IE 10 and IE 11 */
     user-select: none; /* Standard syntax */
-  }
+}
+
+/* Taken from https://stackoverflow.com/questions/5697067/css-for-grabbing-cursors-drag-drop */
+.grabbable {
+    cursor: move;
+    cursor: grab;
+    cursor: -moz-grab;
+    cursor: -webkit-grab;
+}
+
+.grabbable:active {
+    cursor: grabbing;
+    cursor: -moz-grabbing;
+    cursor: -webkit-grabbing;
+}

@@ -12,6 +12,7 @@ function createPiece(pieceCode) {
     piece.draggable = true;
     piece.innerHTML = pieceCode;
     piece.classList.add("piece");
+    piece.classList.add("grabbable");
     return piece;
 }
 
