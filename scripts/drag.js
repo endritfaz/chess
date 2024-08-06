@@ -1,16 +1,9 @@
 let dragged;
 
-function setDropZones() {
-    const a7 = document.querySelector(".target");
-    a7.addEventListener("drop", dropHandler);
-    a7.addEventListener("dragover", dragoverHandler);
-}
+// TODO: Will work with board representation to calculate where the piece being dragged is able to move (add dragover and drop event handlers)
+function setDropZones() {}
 
-function removeDropZones() {
-    const a7 = document.querySelector(".target");
-    a7.removeEventListener("drop", dropHandler);
-    a7.removeEventListener("dragover", dragoverHandler);
-}
+function removeDropZones() {}
 
 // For an element to be draggable it needs both the draggable tag and the dragstart event handler
 function dragstartHandler(ev) {
@@ -34,7 +27,8 @@ function dragendHandler(ev) {
     console.log("dragend")
 }
 
-const pawn = document.querySelector(".piece");
-pawn.addEventListener("dragstart", dragstartHandler);
-pawn.addEventListener("dragend", dragendHandler);
-
+const pieces = document.querySelectorAll(".piece");
+for (let i = 0; i < pieces.length; i++) {
+    pieces[i].addEventListener("dragstart", dragstartHandler);
+    pieces[i].addEventListener("dragend", dragendHandler);
+}
