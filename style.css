@@ -16,6 +16,7 @@ body {
 
     /* Stops the background from being dragged. Taken from https://stackoverflow.com/questions/61812276/why-html-draggable-element-drags-with-parent-background */
     transform: translate(0, 0);
+
 }
 
 .container {
@@ -69,3 +70,8 @@ body {
     cursor: -moz-grabbing;
     cursor: -webkit-grabbing;
 }
+
+.drop-zone {
+    border: 1px solid red;
+}
+
