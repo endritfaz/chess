@@ -16,6 +16,7 @@ function createPiece(pieceCode) {
     return piece;
 }
 
+// TODO: Replace this function with a function that loads an arbitrary position from a string
 function placePieces() {
     // Assumes the player is playing white as this will likely be the case
     let playerPawns = WHITE_PAWN;
@@ -31,7 +32,7 @@ function placePieces() {
         opponentPieces = WHITE_PIECES
     }
 
-    const allSquares = Array.from(board.childNodes);
+    const allSquares = Array.from(boardView.childNodes);
   
     let opponentPawnRow = allSquares.filter((square) => (square.id[1] == '7'));
     let playerPawnRow = allSquares.filter((square) => (square.id[1] == '2'));
@@ -63,14 +64,7 @@ function colorSquare(square) {
     let row = parseInt(square.id[1]);
     let positionSum = row + column;
 
-    if (positionSum % 2 == 0) {
-        square.style.backgroundColor = GREEN;
-    }
-
-    else {
-        square.style.backgroundColor = WHITE;
-    }
-
+    square.style.backgroundColor = (positionSum % 2 == 0) ? GREEN : WHITE;
 }
 
 function roundCorners() {
@@ -86,7 +80,7 @@ function roundCorners() {
 }
 
 
-const board = document.querySelector("#board");
+const boardView = document.querySelector("#board");
 
 for (let row = 8; row > 0; row--) {
     for (let column = 1; column < 9; column++) {
@@ -97,7 +91,7 @@ for (let row = 8; row > 0; row--) {
         colorSquare(square);
         
         
-        board.appendChild(square);
+        boardView.appendChild(square);
     }
 }
 

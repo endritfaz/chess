@@ -27,8 +27,8 @@ function dragendHandler(ev) {
     console.log("dragend")
 }
 
-const pieces = document.querySelectorAll(".piece");
+const piecesView = document.querySelectorAll(".piece");
 for (let i = 0; i < pieces.length; i++) {
-    pieces[i].addEventListener("dragstart", dragstartHandler);
-    pieces[i].addEventListener("dragend", dragendHandler);
+    piecesView[i].addEventListener("dragstart", dragstartHandler);
+    piecesView[i].addEventListener("dragend", dragendHandler);
 }
