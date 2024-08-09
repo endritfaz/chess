@@ -79,6 +79,58 @@ function roundCorners() {
     bottomRightCorner.classList.add("bottom-right-corner");
 }
 
+function placePieces(FEN) {
+    let piecePosition = 0;
+    for (let i = 0; i < FEN.length; i++) {
+        if (FEN[i] == '/') {
+            continue;
+        }
+
+        if (isNaN(FEN[i])) {
+            let pieceCode = getPieceCode(FEN[i]);
+            let piece = createPiece(pieceCode);
+            const square = document.querySelector(`#${CSS.escape(`${piecePosition}`)}`);
+            square.appendChild(piece);
+            piecePosition += 1;
+        }
+
+        else {
+            piecePosition += parseInt(FEN[i]);
+        }
+    }
+}
+
+function getPieceCode(FENToken) {
+    switch (FENToken) {
+        // White pieces
+        case 'P':
+            return "&#x2659;";
+        case 'N':
+            return "&#x2658;";
+        case 'B':
+            return "&#x2657;";
+        case 'R':
+            return "&#x2656;";
+        case 'Q':
+            return "&#x2655;";
+        case 'K':
+            return "&#x2654;";
+
+        // Black pieces
+        case 'p':
+            return "&#x265F;";
+        case 'n':
+            return "&#x265E;";
+        case 'b':
+            return "&#x265D;";
+        case 'r':
+            return "&#x265C;";
+        case 'q':
+            return "&#x265B;";
+        case 'k':
+            return "&#x265A;";
+    }
+}
 
 const boardView = document.querySelector("#board");
 

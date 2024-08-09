@@ -3,7 +3,8 @@ let dragMoves;
 
 // TODO: Will work with board representation to calculate where the piece being dragged is able to move (add dragover and drop event handlers)
 function setDropZones(targetSquare) {
-    dragMoves = calculateMoves(targetSquare.id);
+    console.log("drag")
+    dragMoves = boardController.calculatePieceMoves(targetSquare.id);
 
     for (let i = 0; i < dragMoves.length; i++) {
         square = document.querySelector(`#${CSS.escape(dragMoves[i])}`)

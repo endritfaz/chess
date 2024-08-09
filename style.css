@@ -26,13 +26,12 @@ body {
     align-items: center;
 }
 
-#board {
+.board {
     --corner-border-radius: 7px;
     display: grid; 
     /* This makes the squares resize responsively */
     --square-size: clamp(20px, 50vw, calc(min(80vh, 80vw)/8));
     grid-template: repeat(8, var(--square-size)) / repeat(8, var(--square-size));
-    
 }
 
 .top-left-corner { 
