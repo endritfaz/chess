@@ -99,7 +99,7 @@ class BoardModel {
     }
 
     isEmpty(square) {
-        return (square >= 0 && square < 64 && this.board[square] == EMPTY);
+        return this.board[square] == EMPTY;
     }
 
     getPiece(square) {
@@ -114,12 +114,26 @@ class BoardModel {
         }
     }
 
-    getRank(square) {
+    static inRange(square) {
+        return square >= 0 && square < 64;
+    }
+
+    static getRank(square) {
         return (9 - (Math.floor(square/8) + 1));
     }
 
-    getFile(square) {
+    static getFile(square) {
         return ((square % 8) + 1);
+    }
+
+    // Takes two squares in 1D, converts to 2D and finds manhatten distance between them
+    static manhattenDistance(squareOne, squareTwo) {
+        const squareOne2D = [BoardModel.getRank(squareOne), BoardModel.getFile(squareOne)];
+        const squareTwo2D = [BoardModel.getRank(squareTwo), BoardModel.getFile(squareTwo)];
+
+        const manhattenDistance = Math.abs(squareOne2D[0] - squareTwo2D[0]) + Math.abs(squareOne2D[1] - squareTwo2D[1]);
+
+        return manhattenDistance;
     }
 }
 
