@@ -9,6 +9,6 @@ const boardView = new BoardView();
 boardView.placePieces("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR");
 container.append(boardView.board);
 
-const boardController = new BoardController(boardView, boardModel);
+const boardController = new BoardController(boardView, boardModel, true);
 
 

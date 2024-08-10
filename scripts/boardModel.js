@@ -27,6 +27,21 @@ class BoardModel {
         this.whitePlayer = true;
     }
 
+    updateBoard(sourceSquare, targetSquare) {
+        // Update pawn two rank move privileges 
+        if (this.board[sourceSquare] instanceof Pawn) {
+            this.getPiece(sourceSquare).moved = true;
+        }
+
+        this.board[targetSquare] = this.getPiece(sourceSquare);
+        this.board[sourceSquare] = EMPTY;
+        console.log(this.board);
+    }
+
+    updateActiveTurn() {
+        this.whiteActive = !this.whiteActive;
+    }
+
     placePieces(piecePlacement) {
         for (let i = 0; i < piecePlacement.length; i++) {
             let token = piecePlacement[i];
@@ -36,7 +51,16 @@ class BoardModel {
             }
 
             if (isNaN(token)) {
-                let piece = this.decodeFENToken(token);
+                // Pawn directionality 
+                let multiplier;
+                if (this.board.length >= 8 && this.board.length <= 15) {
+                    multiplier = 1; 
+                }
+                else {
+                    multiplier = -1;
+                }
+
+                let piece = this.decodeFENToken(token, multiplier);
                 this.board.push(piece);
 
                 if (token == token.toUpperCase()) {
@@ -55,23 +79,47 @@ class BoardModel {
         }
     }
 
-    decodeFENToken(token) {
+    decodeFENToken(token, multiplier) {
         const white = (token == token.toUpperCase()) ? true : false;
         
         switch(token.toLowerCase()) {
             case 'p':
-                return new Pawn(white);
+                return new Pawn(this, white, multiplier);
             case 'n':
-                return new Knight(white);
+                return new Knight(this, white);
             case 'b':
-                return new Bishop(white);
+                return new Bishop(this, white);
             case 'r':
-                return new Rook(white);
+                return new Rook(this, white);
             case 'q':
-                return new Queen(white);
+                return new Queen(this, white);
             case 'k':
-                return new King(white);
+                return new King(this, white);
         }
+    }
+
+    isEmpty(square) {
+        return (square >= 0 && square < 64 && this.board[square] == EMPTY);
+    }
+
+    getPiece(square) {
+        return this.board[square];
+    }
+
+    getSquare(piece) {
+        for (let i = 0; i < this.board.length; i++) {
+            if (this.board[i] == piece) {
+                return i; 
+            }
+        }
+    }
+
+    getRank(square) {
+        return (9 - (Math.floor(square/8) + 1));
+    }
+
+    getFile(square) {
+        return ((square % 8) + 1);
     }
 }
 

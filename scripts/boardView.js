@@ -6,6 +6,21 @@ class BoardView {
         this.roundCorners();
     }
 
+    updateBoard(sourceSquareID, targetSquareID) {
+        let sourceSquare = this.board.querySelector(`#${CSS.escape(`${sourceSquareID}`)}`);
+        let targetSquare = this.board.querySelector(`#${CSS.escape(`${targetSquareID}`)}`);
+
+        const targetPiece = targetSquare.querySelector(".piece");
+        // Remove piece from target square - relies on piece being direct child of square
+        if (targetPiece != null) {
+            targetSquare.removeChild(targetPiece);
+        }
+        
+        const sourcePiece =  sourceSquare.removeChild(sourceSquare.querySelector(".piece"));
+
+        targetSquare.appendChild(sourcePiece);
+    }
+
     createBoard() {
         this.board = document.createElement("div");
         this.board.classList.add("board");
