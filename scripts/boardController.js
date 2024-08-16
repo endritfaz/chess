@@ -31,17 +31,11 @@ class BoardController {
         this.boardView.updateBoard(sourceSquare, targetSquare);
     }
 
-    // TODO: Add visual cue to board to represent turn 
-    updateActiveTurn() {
-        this.boardModel.updateActiveTurn();
-    }
-
     // Need to be able to remove listener and to not lose context
     dragoverCallback = (e) => this.dragoverHandler(e);
     dropCallback = (e) => this.dropHandler(e);
     
     setDropZones(targetSquare) {
-        this.calculatePieceMoves(targetSquare.id);
         this.dragMoves = boardModel.getPiece(targetSquare.id).getMoves();
         
         for (let i = 0; i < this.dragMoves.length; i++) {
@@ -60,8 +54,6 @@ class BoardController {
             square.removeEventListener("drop", this.dropCallback);
     
             square.classList.remove("drop-zone");
-
-            console.log(square)
         }
         this.dragMoves = [];
     }
@@ -96,7 +88,6 @@ class BoardController {
         let targetSquare = parseInt((ev.target.firstChild != null ? ev.target.parentNode : ev.target).id);
         
         this.updateBoard(sourceSquare, targetSquare);
-        this.updateActiveTurn()
     }
 }
 

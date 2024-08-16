@@ -25,17 +25,55 @@ class BoardModel {
         
         // TODO: Add to constructor and allow user to switch by button. Will probably need a "game manager" class that changes both the model and the display
         this.whitePlayer = true;
+
+        // Initialise the moveset for the active player
+        
+        let activePieces = this.whiteActive ? this.whitePieces : this.blackPieces;
+
+        this.calculateMoves(activePieces, true);
+
     }
 
+    // Calculates all moves for a set of pieces. Legal controls whether the moves calcualated are legal or pseudolegal
+    calculateMoves(pieces, legal) {
+        let moves = []
+        for (let i = 0; i < pieces.length; i++) {
+            pieces[i].calculateMoves(this.getSquare(pieces[i]));
+            
+            if (legal) {
+                pieces[i].legaliseMoves()
+            }
+
+            moves = moves.concat(pieces[i].getMoves());
+        }
+        return moves;
+    }
+
+    // Updates after a move is made
     updateBoard(sourceSquare, targetSquare) {
         // Update pawn two rank move privileges 
         if (this.board[sourceSquare] instanceof Pawn) {
             this.getPiece(sourceSquare).moved = true;
         }
 
+        // Remove piece from one of the blackPieces or whitePieces arrays when it is captured 
+        if (this.board[targetSquare] != EMPTY) {
+            this.removePiece(this.board.targetSquare)
+        }
+
+        this.makeMove(sourceSquare, targetSquare);
+
+        // Calculate the moves for the next player given the latest move from the active player
+        this.updateActiveTurn();
+
+        let activePieces = this.whiteActive ? this.whitePieces : this.blackPieces;
+        
+        this.calculateMoves(activePieces, true);
+    }
+
+    makeMove(sourceSquare, targetSquare) {
         this.board[targetSquare] = this.getPiece(sourceSquare);
         this.board[sourceSquare] = EMPTY;
-        console.log(this.board);
     }
 
     updateActiveTurn() {
@@ -97,6 +135,13 @@ class BoardModel {
                 return new King(this, white);
         }
     }
+    // Removes a piece from one of the blackPieces or whitePieces arrays
+    removePiece(piece) {
+        let inactivePieces = this.whiteActive ? this.blackPieces : this.whitePieces;
+
+        let pieceIndex = inactivePieces.indexOf(piece);
+        inactivePieces.splice(pieceIndex, 1);
+    }
 
     isEmpty(square) {
         return this.board[square] == EMPTY;
@@ -108,7 +153,7 @@ class BoardModel {
 
     getSquare(piece) {
         for (let i = 0; i < this.board.length; i++) {
-            if (this.board[i] == piece) {
+            if (this.board[i] === piece) {
                 return i; 
             }
         }
@@ -135,5 +180,45 @@ class BoardModel {
 
         return manhattenDistance;
     }
+
+    getActiveKing() {
+        let activePieces = this.whiteActive ? this.whitePieces : this.blackPieces;
+
+        for (let i = 0; i < activePieces.length; i++) {
+            if (activePieces[i] instanceof King) {
+                return activePieces[i];
+            }
+        }
+    }
+
+    // Simulate the move to see if it would put the player's king in check
+    // TODO: Possibly optimise this so not all of the inacive player moves need to be recalculated 
+    isLegalMove(sourceSquare, targetSquare) {    
+        let legalMove = true;
+        const sourcePiece = this.board[sourceSquare];
+        const targetPiece = this.board[targetSquare];
+        const inactivePieces = this.whiteActive ? this.blackPieces : this.whitePieces;
+  
+        this.makeMove(sourceSquare, targetSquare);
+ 
+        const activeKingSquare = this.getSquare(this.getActiveKing());
+        
+        const inactivePlayerMoves = this.calculateMoves(inactivePieces, false);
+    
+        // Check if king is being attacked (king square is in inactive player's moves)
+        // TODO: Seperate normal moves from attacks and only search attacks 
+        for (let i = 0; i < inactivePlayerMoves.length; i++) {
+            if (inactivePlayerMoves[i] == activeKingSquare) {
+                legalMove = false;
+            }
+        }
+
+        // Undo the move
+        this.board[sourceSquare] = sourcePiece;
+        this.board[targetSquare] = targetPiece;
+
+        return legalMove;
+    }
 }
+
 

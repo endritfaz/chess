@@ -18,6 +18,22 @@ class Piece {
         return this.moves;
     }
     
+    // Removing from array being parsed
+    legaliseMoves() {
+        let legalMoves = []
+        for (let i = 0; i < this.moves.length; i++) {
+            if (this.board.isLegalMove(this.board.getSquare(this), this.moves[i])) {
+                console.log(`${this.board.getSquare(this)} to ${this.moves[i]}`);
+                legalMoves.push(this.moves[i])
+            }
+        }
+        this.moves = legalMoves;
+    }
+
+    addMove(targetSquare) {
+            this.moves.push(targetSquare)
+    }
+
     canMove(square) {
         return BoardModel.inRange(square) && this.board.isEmpty(square);
     }
@@ -26,7 +42,7 @@ class Piece {
         return BoardModel.inRange(square) && !this.board.isEmpty(square) && this.isWhite() != this.board.getPiece(square).isWhite()
     }
 
-    // Methods here rather than in a seperate 'DiagonalMover' or 'StraightMover' abstract class because javascript doesn't support multiple inheritance for queen
+    // Methods here rather than in a seperate 'DiagonalMover' or 'StraightMover' abstract class because Javascript doesn't support multiple inheritance as required for queen
     calculateDiagonalMoves(square) {
         const nwDirection = -9;
         const swDirection = 7;
@@ -81,7 +97,6 @@ class Piece {
             }
             break;
         }
-        console.log(directionalMoves);
         return directionalMoves;
     }
 }
@@ -96,29 +111,28 @@ class Pawn extends Piece {
         this.multiplier = multiplier;
     }
 
-    calculateMoves(square, isPlayingWhite) {
-        // TODO: Change so that moves are only reset when a move is made, and only calculated once per move
+    calculateMoves(square) {
         this.moves = []
       
         const forwardSquare = square + 8*this.multiplier;
         if (this.canMove(forwardSquare)) {
-            this.moves.push(forwardSquare);
+            this.addMove(forwardSquare);
         }
 
         const twoForwardSquare = square + 2*8*this.multiplier;
         if (!this.moved && this.canMove(twoForwardSquare)) {
-            this.moves.push(twoForwardSquare);
+            this.addMove(twoForwardSquare);
         }
 
         // Check rank to be attacked is one more than rank of pawn to avoid attacking pawn on other side of board.
         const leftDiagonal = square + 7*this.multiplier;
         if (this.canAttack(leftDiagonal) && (BoardModel.getRank(square) - this.multiplier == BoardModel.getRank(leftDiagonal))) {
-            this.moves.push(leftDiagonal)
+            this.addMove(leftDiagonal)
         }
 
         const rightDiagonal = square + 9*this.multiplier;
         if (this.canAttack(rightDiagonal) && (BoardModel.getRank(square) - this.multiplier == BoardModel.getRank(rightDiagonal))) {
-            this.moves.push(rightDiagonal)
+            this.addMove(rightDiagonal)
         }
     }
 }
@@ -128,7 +142,6 @@ class Knight extends Piece {
     static KNIGHT_MOVES = [-17, -15, -10, -6, 6, 10, 15, 17];
 
     calculateMoves(square) {
-        // TODO: See above.
         this.moves = [];
 
         // Assuming that a move that teleports to the otherside of the board can't be 3 squares away from the source 
@@ -136,7 +149,7 @@ class Knight extends Piece {
             const targetSquare = square + Knight.KNIGHT_MOVES[i];
     
             if ((BoardModel.manhattenDistance(square, targetSquare) == 3) &&(this.canMove(targetSquare) || this.canAttack(targetSquare))) {
-                this.moves.push(targetSquare);
+                this.addMove(targetSquare);
             }
         }
     }
@@ -144,29 +157,40 @@ class Knight extends Piece {
 
 class Bishop extends Piece {
     calculateMoves(square) {
-        // TODO: See above.
         this.moves = [];
-        
-        this.moves = this.calculateDiagonalMoves(square);
+
+        const diagonalMoves = this.calculateDiagonalMoves(square)
+        for (let i = 0; i < diagonalMoves.length; i++) {
+            this.addMove(diagonalMoves[i]);
+        }
     }
 }
 
 class Rook extends Piece {
     calculateMoves(square) {
-        // TODO: See above
         this.moves = [];
 
-        this.moves = this.calculateDirectMoves(square);
+        const directMoves = this.calculateDirectMoves(square)
+        for (let i = 0; i < directMoves.length; i++) {
+            this.addMove(directMoves[i]);
+        }
     }
 }
 
 class Queen extends Piece {
-        // TODO: See above
-        calculateMoves(square) {
+    calculateMoves(square) {
         this.moves = [];
 
-        this.moves = this.moves.concat(this.calculateDiagonalMoves(square));
-        this.moves = this.moves.concat(this.calculateDirectMoves(square));
+        const directMoves = this.calculateDirectMoves(square)
+        const diagonalMoves = this.calculateDiagonalMoves(square);
+        
+        for (let i = 0; i < directMoves.length; i++) {
+            this.addMove(directMoves[i]);
+        }
+
+        for (let i = 0; i < diagonalMoves.length; i++) {
+            this.addMove(diagonalMoves[i]);
+        }
     }
 }
 
@@ -180,9 +204,8 @@ class King extends Piece {
             const targetSquare = square + King.KING_MOVES[i];
             
             if ((BoardModel.manhattenDistance(square, targetSquare) <= 2) &&(this.canMove(targetSquare) || this.canAttack(targetSquare))) {
-                this.moves.push(targetSquare);
+                this.addMove(targetSquare);
             }
         }
-        console.log(this.moves)
     }
 }
