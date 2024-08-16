@@ -18,20 +18,20 @@ class Piece {
         return this.moves;
     }
     
-    // Removing from array being parsed
     legaliseMoves() {
-        let legalMoves = []
+        let legalMoves = [];
         for (let i = 0; i < this.moves.length; i++) {
             if (this.board.isLegalMove(this.board.getSquare(this), this.moves[i])) {
-                console.log(`${this.board.getSquare(this)} to ${this.moves[i]}`);
                 legalMoves.push(this.moves[i])
             }
         }
         this.moves = legalMoves;
+        console.log(`${this.board.getSquare(this)}: ${this.moves}`);
+
     }
 
     addMove(targetSquare) {
-            this.moves.push(targetSquare)
+        this.moves.push(targetSquare)
     }
 
     canMove(square) {
