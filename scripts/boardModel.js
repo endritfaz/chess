@@ -58,13 +58,32 @@ class BoardModel {
 
         this.makeMove(sourceSquare, targetSquare);
 
+        // TODO: Check for checkmate and stalemate
         // Calculate the moves for the next player given the latest move from the active player
         this.updateActiveTurn();
 
         let activePieces = this.whiteActive ? this.whitePieces : this.blackPieces;
         
-        this.calculateMoves(activePieces, true);
-        console.log("end")
+        let moves = this.calculateMoves(activePieces, true);
+        
+        // Check for checkmate or stalemate
+        if (moves.length == 0) {
+            this.checkForEnding();
+        }
+    }
+
+    checkForEnding() {
+        let activeKingSquare = this.getSquare(this.getActiveKing());
+        const inactivePieces = this.whiteActive ? this.blackPieces : this.whitePieces;
+        const inactivePlayerMoves = this.calculateMoves(inactivePieces, false);
+
+        for (let i = 0; i < inactivePlayerMoves.length; i++) {
+            if (inactivePlayerMoves[i] == activeKingSquare) {
+                console.log("checkmate");
+                return;
+            }
+        }
+        console.log("stalemate");
     }
 
     makeMove(sourceSquare, targetSquare) {
@@ -211,6 +230,7 @@ class BoardModel {
         
         const inactivePlayerMoves = this.calculateMoves(inactivePieces, false);
        
+        
         // Check if king is being attacked (king square is in inactive player's moves)
         // TODO: Seperate normal moves from attacks and only search attacks 
         for (let i = 0; i < inactivePlayerMoves.length; i++) {
