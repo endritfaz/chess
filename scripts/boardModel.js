@@ -28,10 +28,13 @@ class BoardModel {
 
         // Initialise the moveset for the active player
         
-        let activePieces = this.whiteActive ? this.whitePieces : this.blackPieces;
+        this.calculateLegalMoves();
 
-        this.calculateMoves(activePieces, true);
+    }
 
+    calculateLegalMoves() {
+        const activePieces = this.whiteActive ? this.whitePieces : this.blackPieces; 
+        return this.calculateMoves(activePieces, true);
     }
 
     // Calculates all moves for a set of pieces. Legal controls whether the moves calcualated are legal or pseudolegal
@@ -58,13 +61,8 @@ class BoardModel {
 
         this.makeMove(sourceSquare, targetSquare);
 
-        // TODO: Check for checkmate and stalemate
         // Calculate the moves for the next player given the latest move from the active player
-        this.updateActiveTurn();
-
-        let activePieces = this.whiteActive ? this.whitePieces : this.blackPieces;
-        
-        let moves = this.calculateMoves(activePieces, true);
+        let moves = this.calculateLegalMoves();
         
         // Check for checkmate or stalemate
         if (moves.length == 0) {
@@ -96,6 +94,7 @@ class BoardModel {
             let targetPieceIndex = pieceSet.indexOf(targetPiece);
             pieceSet.splice(targetPieceIndex, 1);
         }
+        this.updateActiveTurn();
     }
 
     unmakeMove(sourceSquare, targetSquare, targetPiece) {
@@ -106,6 +105,7 @@ class BoardModel {
             let pieceSet = targetPiece.white ? this.whitePieces : this.blackPieces;
             pieceSet.push(targetPiece);
         }
+        this.updateActiveTurn();
     }
 
     updateActiveTurn() {
@@ -223,9 +223,11 @@ class BoardModel {
         let legalMove = true;
         const targetPiece = this.board[targetSquare];
         const inactivePieces = this.whiteActive ? this.blackPieces : this.whitePieces;
-  
+        
+        // Make the move but don't change turn 
         this.makeMove(sourceSquare, targetSquare);
- 
+        this.updateActiveTurn();
+
         const activeKingSquare = this.getSquare(this.getActiveKing());
         
         const inactivePlayerMoves = this.calculateMoves(inactivePieces, false);
@@ -240,9 +242,8 @@ class BoardModel {
         }
 
         this.unmakeMove(sourceSquare, targetSquare, targetPiece)
-
+        this.updateActiveTurn();
+        
         return legalMove;
     }
 }
-
-

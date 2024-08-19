@@ -21,11 +21,6 @@ class BoardController {
         }
     }
 
-    calculatePieceMoves(square) {
-        const piece = this.boardModel.board[parseInt(square)];
-        piece.calculateMoves(parseInt(square), this.isPlayingWhite);
-    }
-
     updateBoard(sourceSquare, targetSquare) {
         this.boardModel.updateBoard(sourceSquare, targetSquare);
         this.boardView.updateBoard(sourceSquare, targetSquare);

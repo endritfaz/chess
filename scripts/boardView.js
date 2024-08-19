@@ -122,5 +122,3 @@ class BoardView {
         bottomRightCorner.classList.add("bottom-right-corner");
     }
 }
-
-
