@@ -26,8 +26,6 @@ class Piece {
             }
         }
         this.moves = legalMoves;
-        console.log(`${this.board.getSquare(this)}: ${this.moves.map(move => move.targetSquare)}`);
-
     }
 
     addMove(targetSquare) {

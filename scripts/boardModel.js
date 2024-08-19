@@ -29,7 +29,7 @@ class BoardModel {
         // Initialise the moveset for the active player
         
         this.calculateLegalMoves();
-
+        console.clear()
     }
 
     calculateLegalMoves() {
@@ -59,9 +59,6 @@ class BoardModel {
         const move = new Move(sourceSquare, targetSquare, this.getPiece(sourceSquare), this.getPiece(targetSquare));
 
         this.makeMove(move);
-        console.log(this.whitePieces);
-        console.log(this.blackPieces)
-        console.log(this.board)
         // Calculate the moves for the next player given the latest move from the active player
         let moves = this.calculateLegalMoves();
         
@@ -99,7 +96,6 @@ class BoardModel {
             let pieceSet = move.targetPiece.isWhite() ? this.whitePieces : this.blackPieces;
            
             let targetPieceIndex = pieceSet.indexOf(move.targetPiece);
-            console.log(pieceSet[targetPieceIndex])
             pieceSet.splice(targetPieceIndex, 1);
         }
 
