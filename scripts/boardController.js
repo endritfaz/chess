@@ -31,7 +31,7 @@ class BoardController {
     dropCallback = (e) => this.dropHandler(e);
     
     setDropZones(targetSquare) {
-        this.dragMoves = boardModel.getPiece(targetSquare.id).getMoves();
+        this.dragMoves = (boardModel.getPiece(targetSquare.id).getMoves()).map(move => move.targetSquare);
         
         for (let i = 0; i < this.dragMoves.length; i++) {
             let square = document.querySelector(`#${CSS.escape(this.dragMoves[i])}`)

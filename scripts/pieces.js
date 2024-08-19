@@ -21,12 +21,12 @@ class Piece {
     legaliseMoves() {
         let legalMoves = [];
         for (let i = 0; i < this.moves.length; i++) {
-            if (this.board.isLegalMove(this.board.getSquare(this), this.moves[i])) {
+            if (this.board.isLegalMove(this.moves[i])) {
                 legalMoves.push(this.moves[i])
             }
         }
         this.moves = legalMoves;
-        console.log(`${this.board.getSquare(this)}: ${this.moves}`);
+        console.log(`${this.board.getSquare(this)}: ${this.moves.map(move => move.targetSquare)}`);
 
     }
 
@@ -104,6 +104,7 @@ class Piece {
 class Pawn extends Piece {
     // Boolean for whether a pawn has moved off home row, to determine eligibiltiy to move forward two squares 
     moved = false;
+    moveCounter = 0; 
     multiplier; 
 
     constructor(board, white, multiplier) {
@@ -116,23 +117,27 @@ class Pawn extends Piece {
       
         const forwardSquare = square + 8*this.multiplier;
         if (this.canMove(forwardSquare)) {
-            this.addMove(forwardSquare);
+            const forwardMove = new Move(square, forwardSquare, this, this.board.getPiece(forwardSquare))
+            this.addMove(forwardMove);
         }
 
         const twoForwardSquare = square + 2*8*this.multiplier;
         if (!this.moved && this.canMove(twoForwardSquare)) {
-            this.addMove(twoForwardSquare);
+            const twoForwardMove = new Move(square, twoForwardSquare, this, this.board.getPiece(twoForwardSquare))
+            this.addMove(twoForwardMove);
         }
 
         // Check rank to be attacked is one more than rank of pawn to avoid attacking pawn on other side of board.
         const leftDiagonal = square + 7*this.multiplier;
         if (this.canAttack(leftDiagonal) && (BoardModel.getRank(square) - this.multiplier == BoardModel.getRank(leftDiagonal))) {
-            this.addMove(leftDiagonal)
+            const leftDiagonalMove = new Move(square, leftDiagonal, this, this.board.getPiece(leftDiagonal))
+            this.addMove(leftDiagonalMove)
         }
 
         const rightDiagonal = square + 9*this.multiplier;
         if (this.canAttack(rightDiagonal) && (BoardModel.getRank(square) - this.multiplier == BoardModel.getRank(rightDiagonal))) {
-            this.addMove(rightDiagonal)
+            const rightDiagonalMove = new Move(square, rightDiagonal, this, this.board.getPiece(rightDiagonal))
+            this.addMove(rightDiagonalMove)
         }
     }
 }
@@ -149,7 +154,8 @@ class Knight extends Piece {
             const targetSquare = square + Knight.KNIGHT_MOVES[i];
     
             if ((BoardModel.manhattenDistance(square, targetSquare) == 3) &&(this.canMove(targetSquare) || this.canAttack(targetSquare))) {
-                this.addMove(targetSquare);
+                const knightMove = new Move(square, targetSquare, this, this.board.getPiece(targetSquare));
+                this.addMove(knightMove);
             }
         }
     }
@@ -161,7 +167,8 @@ class Bishop extends Piece {
 
         const diagonalMoves = this.calculateDiagonalMoves(square)
         for (let i = 0; i < diagonalMoves.length; i++) {
-            this.addMove(diagonalMoves[i]);
+            const diagonalMove = new Move(square, diagonalMoves[i], this, this.board.getPiece(diagonalMoves[i]));
+            this.addMove(diagonalMove);
         }
     }
 }
@@ -172,7 +179,8 @@ class Rook extends Piece {
 
         const directMoves = this.calculateDirectMoves(square)
         for (let i = 0; i < directMoves.length; i++) {
-            this.addMove(directMoves[i]);
+            const directMove = new Move(square, directMoves[i], this, this.board.getPiece(directMoves[i]));
+            this.addMove(directMove);
         }
     }
 }
@@ -185,11 +193,13 @@ class Queen extends Piece {
         const diagonalMoves = this.calculateDiagonalMoves(square);
         
         for (let i = 0; i < directMoves.length; i++) {
-            this.addMove(directMoves[i]);
+            const directMove = new Move(square, directMoves[i], this, this.board.getPiece(directMoves[i]));
+            this.addMove(directMove);
         }
 
         for (let i = 0; i < diagonalMoves.length; i++) {
-            this.addMove(diagonalMoves[i]);
+            const diagonalMove = new Move(square, diagonalMoves[i], this, this.board.getPiece(diagonalMoves[i]));
+            this.addMove(diagonalMove);
         }
     }
 }
@@ -204,7 +214,8 @@ class King extends Piece {
             const targetSquare = square + King.KING_MOVES[i];
             
             if ((BoardModel.manhattenDistance(square, targetSquare) <= 2) &&(this.canMove(targetSquare) || this.canAttack(targetSquare))) {
-                this.addMove(targetSquare);
+                const kingMove = new Move(square, targetSquare, this, this.board.getPiece(targetSquare))
+                this.addMove(kingMove);
             }
         }
     }

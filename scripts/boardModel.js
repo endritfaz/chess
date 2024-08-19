@@ -41,6 +41,7 @@ class BoardModel {
     calculateMoves(pieces, legal) {
         let moves = [];
         for (let i = 0; i < pieces.length; i++) {
+            
             pieces[i].calculateMoves(this.getSquare(pieces[i]));
             
             if (legal) {
@@ -54,13 +55,13 @@ class BoardModel {
 
     // Updates after a move is made
     updateBoard(sourceSquare, targetSquare) {
-        // Update pawn two rank move privileges 
-        if (this.board[sourceSquare] instanceof Pawn) {
-            this.getPiece(sourceSquare).moved = true;
-        }
+        
+        const move = new Move(sourceSquare, targetSquare, this.getPiece(sourceSquare), this.getPiece(targetSquare));
 
-        this.makeMove(sourceSquare, targetSquare);
-
+        this.makeMove(move);
+        console.log(this.whitePieces);
+        console.log(this.blackPieces)
+        console.log(this.board)
         // Calculate the moves for the next player given the latest move from the active player
         let moves = this.calculateLegalMoves();
         
@@ -84,27 +85,44 @@ class BoardModel {
         console.log("stalemate");
     }
 
-    makeMove(sourceSquare, targetSquare) {
-        let targetPiece = this.board[targetSquare];
-        this.board[targetSquare] = this.getPiece(sourceSquare);
-        this.board[sourceSquare] = EMPTY;
+    makeMove(move) {
+        // Update pawn two rank move privileges 
+        if (move.sourcePiece instanceof Pawn) {
+            move.sourcePiece.moved = true;
+            move.sourcePiece.moveCounter += 1;
+        }
 
-        if (targetPiece != EMPTY) {
-            let pieceSet = targetPiece.white ? this.whitePieces : this.blackPieces;
-            let targetPieceIndex = pieceSet.indexOf(targetPiece);
+        this.board[move.targetSquare] = move.sourcePiece;
+        this.board[move.sourceSquare] = EMPTY;
+
+        if (move.targetPiece != EMPTY) {
+            let pieceSet = move.targetPiece.isWhite() ? this.whitePieces : this.blackPieces;
+           
+            let targetPieceIndex = pieceSet.indexOf(move.targetPiece);
+            console.log(pieceSet[targetPieceIndex])
             pieceSet.splice(targetPieceIndex, 1);
         }
+
         this.updateActiveTurn();
     }
 
-    unmakeMove(sourceSquare, targetSquare, targetPiece) {
-        this.board[sourceSquare] = this.board[targetSquare];
-        this.board[targetSquare] = targetPiece;
-
-        if (targetPiece != EMPTY) {
-            let pieceSet = targetPiece.white ? this.whitePieces : this.blackPieces;
-            pieceSet.push(targetPiece);
+    unmakeMove(move) {
+        // Update pawn two rank move privileges 
+        if (move.sourcePiece instanceof Pawn) {
+            move.sourcePiece.moveCounter -= 1; 
+            if (move.sourcePiece.moveCounter == 0) {
+                move.sourcePiece.moved = false;
+            }
         }
+
+        this.board[move.sourceSquare] = move.sourcePiece;
+        this.board[move.targetSquare] = move.targetPiece;
+
+        if (move.targetPiece != EMPTY) {
+            let pieceSet = move.targetPiece.isWhite() ? this.whitePieces : this.blackPieces;
+            pieceSet.push(move.targetPiece);
+        }
+
         this.updateActiveTurn();
     }
 
@@ -219,13 +237,12 @@ class BoardModel {
     // Simulate the move to see if it would put the player's king in check
     // TODO: Possibly optimise this so not all of the inacive player moves need to be recalculated
     // Bugged
-    isLegalMove(sourceSquare, targetSquare) {    
+    isLegalMove(move) {
         let legalMove = true;
-        const targetPiece = this.board[targetSquare];
         const inactivePieces = this.whiteActive ? this.blackPieces : this.whitePieces;
         
         // Make the move but don't change turn 
-        this.makeMove(sourceSquare, targetSquare);
+        this.makeMove(move);
         this.updateActiveTurn();
 
         const activeKingSquare = this.getSquare(this.getActiveKing());
@@ -236,14 +253,15 @@ class BoardModel {
         // Check if king is being attacked (king square is in inactive player's moves)
         // TODO: Seperate normal moves from attacks and only search attacks 
         for (let i = 0; i < inactivePlayerMoves.length; i++) {
-            if (inactivePlayerMoves[i] == activeKingSquare) {
+            if (inactivePlayerMoves[i].targetSquare == activeKingSquare) {
                 legalMove = false;
             }
         }
 
-        this.unmakeMove(sourceSquare, targetSquare, targetPiece)
+        this.unmakeMove(move)
         this.updateActiveTurn();
         
         return legalMove;
+    
     }
 }
