@@ -135,16 +135,26 @@ class BoardModel {
             }
 
             if (isNaN(token)) {
-                // Pawn directionality 
+                // TODO: Pawn directionality - move this somewhere else
                 let multiplier;
-                if (this.board.length >= 8 && this.board.length <= 15) {
-                    multiplier = 1; 
-                }
-                else {
-                    multiplier = -1;
+                let moved;
+                let moveCount; 
+                if (token.toLowerCase() == 'p') {
+                    // TODO: This currently assumes black pieces will be on top of board, allow this to be changed dynamically
+                    if (token != token.toUpperCase()) {
+                        multiplier = 1;
+                        moved = !(this.board.length >= 8 && this.board.length <= 15)
+                        moveCount = moved == true ? 1 : 0;
+                    }
+
+                    else {
+                        multiplier = -1;
+                        moved = !(this.board.length >= 48 && this.board.length <= 55);
+                        moveCount = moved == true ? 1 : 0; 
+                    }
                 }
 
-                let piece = this.decodeFENToken(token, multiplier);
+                let piece = this.decodeFENToken(token, multiplier, moved, moveCount);
                 this.board.push(piece);
 
                 if (token == token.toUpperCase()) {
@@ -163,12 +173,12 @@ class BoardModel {
         }
     }
 
-    decodeFENToken(token, multiplier) {
+    decodeFENToken(token, multiplier, moved, moveCount) {
         const white = (token == token.toUpperCase()) ? true : false;
         
         switch(token.toLowerCase()) {
             case 'p':
-                return new Pawn(this, white, multiplier);
+                return new Pawn(this, white, multiplier, moved, moveCount);
             case 'n':
                 return new Knight(this, white);
             case 'b':

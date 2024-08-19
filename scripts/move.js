@@ -3,8 +3,6 @@ class Move {
     targetSquare;
     sourcePiece;
     targetPiece;
-
-    initialPawnMove;
     
     constructor(sourceSquare, targetSquare, sourcePiece, targetPiece) {
         this.sourceSquare = sourceSquare;

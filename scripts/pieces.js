@@ -101,13 +101,15 @@ class Piece {
 
 class Pawn extends Piece {
     // Boolean for whether a pawn has moved off home row, to determine eligibiltiy to move forward two squares 
-    moved = false;
-    moveCounter = 0; 
+    moved;
+    moveCounter; 
     multiplier; 
 
-    constructor(board, white, multiplier) {
+    constructor(board, white, multiplier, moved, moveCounter) {
         super(board, white)
         this.multiplier = multiplier;
+        this.moved = moved;
+        this.moveCounter = moveCounter
     }
 
     calculateMoves(square) {
@@ -120,7 +122,7 @@ class Pawn extends Piece {
         }
 
         const twoForwardSquare = square + 2*8*this.multiplier;
-        if (!this.moved && this.canMove(twoForwardSquare)) {
+        if (!this.moved && this.board.isEmpty(forwardSquare) && this.canMove(twoForwardSquare)) {
             const twoForwardMove = new Move(square, twoForwardSquare, this, this.board.getPiece(twoForwardSquare))
             this.addMove(twoForwardMove);
         }
