@@ -74,3 +74,6 @@ body {
     border: 1px solid red;
 }
 
+.last-move {
+    background-color: #f5f682;
+}

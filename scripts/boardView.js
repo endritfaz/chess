@@ -16,7 +16,7 @@ class BoardView {
             targetSquare.removeChild(targetPiece);
         }
         
-        const sourcePiece =  sourceSquare.removeChild(sourceSquare.querySelector(".piece"));
+        const sourcePiece = sourceSquare.removeChild(sourceSquare.querySelector(".piece"));
 
         targetSquare.appendChild(sourcePiece);
     }
