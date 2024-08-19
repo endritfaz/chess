@@ -31,4 +31,4 @@ function perft(board, depth) {
 }
 
 
-console.log(perftCaller(WHITE_START, 5));
+console.log(perftCaller(TEST, 3));
