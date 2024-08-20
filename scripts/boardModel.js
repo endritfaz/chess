@@ -3,7 +3,7 @@ class BoardModel {
     whitePlayer;
     whiteActive;
     castling;
-    enPassantTargets;
+    enPassantTarget;
     halfMoveClock;
     fullMoveCount;
 
@@ -56,9 +56,10 @@ class BoardModel {
     // Updates after a move is made
     updateBoard(sourceSquare, targetSquare) {
         
-        const move = new Move(sourceSquare, targetSquare, this.getPiece(sourceSquare), this.getPiece(targetSquare));
+        const move = this.getPiece(sourceSquare).getMove(sourceSquare, targetSquare);
 
         this.makeMove(move);
+        console.log(this.enPassantTarget)
         // Calculate the moves for the next player given the latest move from the active player
         let moves = this.calculateLegalMoves();
         
@@ -66,6 +67,7 @@ class BoardModel {
         if (moves.length == 0) {
             this.checkForEnding();
         }
+        
     }
 
     checkForEnding() {
@@ -83,8 +85,13 @@ class BoardModel {
     }
 
     makeMove(move) {
+        this.enPassantTarget = undefined;
         // Update pawn two rank move privileges 
         if (move.sourcePiece instanceof Pawn) {
+            if (move.newEnPassantTargetAvailable()) {
+                this.enPassantTarget = move.newEnPassantTarget;
+            }
+
             move.sourcePiece.moved = true;
             move.sourcePiece.moveCounter += 1;
         }
@@ -98,14 +105,15 @@ class BoardModel {
             let targetPieceIndex = pieceSet.indexOf(move.targetPiece);
             pieceSet.splice(targetPieceIndex, 1);
         }
-
         this.updateActiveTurn();
     }
 
     unmakeMove(move) {
+        this.enPassantTarget = move.oldEnPassantTarget;
         // Update pawn two rank move privileges 
         if (move.sourcePiece instanceof Pawn) {
             move.sourcePiece.moveCounter -= 1; 
+
             if (move.sourcePiece.moveCounter == 0) {
                 move.sourcePiece.moved = false;
             }
@@ -268,6 +276,5 @@ class BoardModel {
         this.updateActiveTurn();
         
         return legalMove;
-    
     }
 }

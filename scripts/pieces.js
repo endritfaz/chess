@@ -18,6 +18,15 @@ class Piece {
         return this.moves;
     }
     
+    // Relies on sourceSquare and targetSquare uniquely identifying a move
+    getMove(sourceSquare, targetSquare) {
+        for (let i = 0; i < this.moves.length; i++) {
+            if ((this.moves[i].sourceSquare == sourceSquare) && (this.moves[i].targetSquare == targetSquare)) {
+                return this.moves[i];
+            }
+        }
+    }
+
     legaliseMoves() {
         let legalMoves = [];
         for (let i = 0; i < this.moves.length; i++) {
@@ -28,8 +37,9 @@ class Piece {
         this.moves = legalMoves;
     }
 
-    addMove(targetSquare) {
-        this.moves.push(targetSquare)
+    addMove(move) {
+        move.oldEnPassantTarget = this.board.enPassantTarget;
+        this.moves.push(move)
     }
 
     canMove(square) {
@@ -114,7 +124,7 @@ class Pawn extends Piece {
 
     calculateMoves(square) {
         this.moves = []
-      
+        
         const forwardSquare = square + 8*this.multiplier;
         if (this.canMove(forwardSquare)) {
             const forwardMove = new Move(square, forwardSquare, this, this.board.getPiece(forwardSquare))
@@ -123,7 +133,8 @@ class Pawn extends Piece {
 
         const twoForwardSquare = square + 2*8*this.multiplier;
         if (!this.moved && this.board.isEmpty(forwardSquare) && this.canMove(twoForwardSquare)) {
-            const twoForwardMove = new Move(square, twoForwardSquare, this, this.board.getPiece(twoForwardSquare))
+            const twoForwardMove = new Move(square, twoForwardSquare, this, this.board.getPiece(twoForwardSquare));
+            twoForwardMove.newEnPassantTarget = forwardSquare;
             this.addMove(twoForwardMove);
         }
 
@@ -134,11 +145,15 @@ class Pawn extends Piece {
             this.addMove(leftDiagonalMove)
         }
 
+        if (this.canMove(leftDiagonal) && this.board.enPassantTarget ==leftDiagonal && (BoardModel.getRank(square) - this.multiplier == BoardModel.getRank(leftDiagonal))) {
+            const leftEnPassant = new EnPassantMove(square, leftDiagonal, this, this.board.getPiece)
+        }
         const rightDiagonal = square + 9*this.multiplier;
         if (this.canAttack(rightDiagonal) && (BoardModel.getRank(square) - this.multiplier == BoardModel.getRank(rightDiagonal))) {
             const rightDiagonalMove = new Move(square, rightDiagonal, this, this.board.getPiece(rightDiagonal))
             this.addMove(rightDiagonalMove)
         }
+
     }
 }
 
