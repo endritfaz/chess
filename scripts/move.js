@@ -20,7 +20,15 @@ class Move {
 }
 
 class EnPassantMove extends Move {
-    constructor(sourceSquare, targetSquare, sourcePiece, targetPiece) {
-        super(sourceSquare, targetSquare, sourcePiece, targetPiece)
+    capturedSquare;
+    capturedPiece;
+
+    constructor(sourceSquare, targetSquare, capturedSquare, sourcePiece, capturedPiece) {
+        super();
+        this.sourceSquare = sourceSquare;
+        this.targetSquare = targetSquare;
+        this.capturedSquare = capturedSquare;
+        this.sourcePiece = sourcePiece;
+        this.capturedPiece = capturedPiece;
     }
 }

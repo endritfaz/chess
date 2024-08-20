@@ -54,20 +54,16 @@ class BoardModel {
     }
 
     // Updates after a move is made
-    updateBoard(sourceSquare, targetSquare) {
-        
-        const move = this.getPiece(sourceSquare).getMove(sourceSquare, targetSquare);
-
+    updateBoard(move) {
         this.makeMove(move);
-        console.log(this.enPassantTarget)
+    
         // Calculate the moves for the next player given the latest move from the active player
         let moves = this.calculateLegalMoves();
         
         // Check for checkmate or stalemate
         if (moves.length == 0) {
             this.checkForEnding();
-        }
-        
+        } 
     }
 
     checkForEnding() {
@@ -96,15 +92,23 @@ class BoardModel {
             move.sourcePiece.moveCounter += 1;
         }
 
-        this.board[move.targetSquare] = move.sourcePiece;
-        this.board[move.sourceSquare] = EMPTY;
+        if (move instanceof EnPassantMove) {
+            this.board[move.targetSquare] = move.sourcePiece;
+            this.board[move.sourceSquare] = EMPTY;
 
-        if (move.targetPiece != EMPTY) {
-            let pieceSet = move.targetPiece.isWhite() ? this.whitePieces : this.blackPieces;
-           
-            let targetPieceIndex = pieceSet.indexOf(move.targetPiece);
-            pieceSet.splice(targetPieceIndex, 1);
+            this.board[move.capturedSquare] = EMPTY;
+            this.removePiece(move.capturedPiece);
         }
+
+        else {
+            this.board[move.targetSquare] = move.sourcePiece;
+            this.board[move.sourceSquare] = EMPTY;
+
+            if (move.targetPiece != EMPTY) {
+                this.removePiece(move.targetPiece);
+            }
+        }
+
         this.updateActiveTurn();
     }
 
@@ -119,15 +123,35 @@ class BoardModel {
             }
         }
 
-        this.board[move.sourceSquare] = move.sourcePiece;
-        this.board[move.targetSquare] = move.targetPiece;
+        if (move instanceof EnPassantMove) {
+            this.board[move.targetSquare] = EMPTY;
+            this.board[move.sourceSquare] = move.sourcePiece;
+            this.board[move.capturedSquare] = move.capturedPiece;
+            this.addPiece(move.capturedPiece);
+        }
+        
+        else {
+            this.board[move.sourceSquare] = move.sourcePiece;
+            this.board[move.targetSquare] = move.targetPiece;
 
-        if (move.targetPiece != EMPTY) {
-            let pieceSet = move.targetPiece.isWhite() ? this.whitePieces : this.blackPieces;
-            pieceSet.push(move.targetPiece);
+            if (move.targetPiece != EMPTY) {
+                this.addPiece(move.targetPiece);
+            }
         }
 
         this.updateActiveTurn();
+    }
+
+    // Remove piece from either blackPieces or whitePieces based on colour 
+    removePiece(piece) {
+        const pieceSet = piece.isWhite() ? this.whitePieces : this.blackPieces;
+        const pieceIndex = pieceSet.indexOf(piece);
+        pieceSet.splice(pieceIndex, 1)
+    }
+
+    addPiece(piece) {
+        const pieceSet = piece.isWhite() ? this.whitePieces : this.blackPieces;
+        pieceSet.push(piece)
     }
 
     updateActiveTurn() {

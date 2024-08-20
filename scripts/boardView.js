@@ -6,9 +6,9 @@ class BoardView {
         this.roundCorners();
     }
 
-    updateBoard(sourceSquareID, targetSquareID) {
-        let sourceSquare = this.board.querySelector(`#${CSS.escape(`${sourceSquareID}`)}`);
-        let targetSquare = this.board.querySelector(`#${CSS.escape(`${targetSquareID}`)}`);
+    updateBoard(move) {
+        const sourceSquare = this.board.querySelector(`#${CSS.escape(`${move.sourceSquare}`)}`);
+        const targetSquare = this.board.querySelector(`#${CSS.escape(`${move.targetSquare}`)}`);
 
         const targetPiece = targetSquare.querySelector(".piece");
         // Remove piece from target square - relies on piece being direct child of square
@@ -19,6 +19,14 @@ class BoardView {
         const sourcePiece = sourceSquare.removeChild(sourceSquare.querySelector(".piece"));
 
         targetSquare.appendChild(sourcePiece);
+
+        if (move instanceof EnPassantMove) {
+            const capturedSquare = this.board.querySelector(`#${CSS.escape(`${move.capturedSquare}`)}`);
+            const capturedPiece = capturedSquare.querySelector(".piece");
+
+            capturedSquare.removeChild(capturedPiece);
+        }
+
     }
 
     createBoard() {

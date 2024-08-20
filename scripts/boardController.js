@@ -21,9 +21,9 @@ class BoardController {
         }
     }
 
-    updateBoard(sourceSquare, targetSquare) {
-        this.boardModel.updateBoard(sourceSquare, targetSquare);
-        this.boardView.updateBoard(sourceSquare, targetSquare);
+    updateBoard(move) {
+        this.boardModel.updateBoard(move);
+        this.boardView.updateBoard(move);
     }
 
     // Need to be able to remove listener and to not lose context
@@ -82,7 +82,9 @@ class BoardController {
         let sourceSquare = parseInt(this.dragged.parentNode.id);
         let targetSquare = parseInt((ev.target.firstChild != null ? ev.target.parentNode : ev.target).id);
         
-        this.updateBoard(sourceSquare, targetSquare);
+        const move = this.boardModel.getPiece(sourceSquare).getMove(sourceSquare, targetSquare);
+
+        this.updateBoard(move);
     }
 }
 

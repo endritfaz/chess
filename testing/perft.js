@@ -6,7 +6,9 @@ function perftCaller(FENCode, depth) {
 
     for (let i = 0; i < legalMoves.length; i++) {
         board.makeMove(legalMoves[i]);
-        console.log(`${BoardModel.getFile(legalMoves[i].sourceSquare)}${BoardModel.getRank(legalMoves[i].sourceSquare)}->${BoardModel.getFile(legalMoves[i].targetSquare)}${BoardModel.getRank(legalMoves[i].targetSquare)}: ${totalNodes += perft(board, depth - 1)}`);
+        let nodes = perft(board, depth - 1);
+        console.log(`${BoardModel.getFile(legalMoves[i].sourceSquare)}${BoardModel.getRank(legalMoves[i].sourceSquare)}->${BoardModel.getFile(legalMoves[i].targetSquare)}${BoardModel.getRank(legalMoves[i].targetSquare)}: ${nodes}`);
+        totalNodes += nodes;
         board.unmakeMove(legalMoves[i]);
     }
 
@@ -31,4 +33,4 @@ function perft(board, depth) {
 }
 
 
-console.log(perftCaller(TEST, 3));
+console.log(perftCaller(WHITE_START, 5));
